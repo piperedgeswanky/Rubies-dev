@@ -1,0 +1,18 @@
+<script>
+	var SPOParams = {
+		"id" : "37f1a6ca3158a6e65844ef0bcf25afa9",
+		"apiScript" : "{{ 'api.jquery.js' | shopify_asset_url }}",
+        "s3Root" : "//s3.amazonaws.com/shopify-preorder/pre-order",
+		"items" : [{% for item in cart.items %}
+		{
+			'id': {{item.id}},
+			'product_id':{{item.product_id}},
+			'variant_id':{{item.variant_id}},
+			'quantity':{{item.quantity}},
+			'properties':{{item.properties | json}},
+			'product': { id:{{item.product_id}}, handle:'{{item.product.handle}}', title:{{item.product.title | json}},variants:[{% for variant in item.product.variants %}{id:{{variant.id}},title:{{variant.title | json}},inventory_quantity:'{{variant.inventory_quantity}}',inventory_management:'{{variant.inventory_management}}',inventory_policy:'{{variant.inventory_policy}}'}{% unless forloop.last %},{% endunless %}{% endfor %}]}
+		}{% unless forloop.last %},{% endunless %}
+		{% endfor %}],
+	};
+</script>
+<script src="//s3.amazonaws.com/shopify-preorder/pre-order/js/common.js" {% if shop.metafields.spurit_po['fast_load'] != '1' %}defer{% endif %}></script>
